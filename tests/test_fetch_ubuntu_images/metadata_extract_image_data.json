@@ -1,0 +1,54 @@
+{
+    "valid_metadata": {
+        "products": {
+            "com.ubuntu.cloud.daily:minimal:16.04:amd64": {
+                "release": "xenial",
+                "version": "16.04",
+                "arch": "amd64",
+                "versions": {
+                    "20210929": {
+                        "items": {
+                            "disk1.img": {
+                                "path": "/minimal/daily/xenial/20210929/xenial-minimal-cloudimg-amd64-disk1.img",
+                                "sha256": "7658ec30373e7ad1a1858744f395a89713d333721d7d1986ee8b71680b81a0a9"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "missing_fields_metadata": {
+        "products": {
+            "product1": {
+                "release": "20.04",
+                "arch": "amd64",
+                "version": "20201026",
+                "url": "http://example.com/image.img"
+            }
+        }
+    },
+    "empty_metadata": {},
+    "no_products_metadata": {
+        "products": {}
+    },
+    "unknown_fields_metadata": {
+        "products": {
+            "product1": {
+                "release": "unknown",
+                "arch": "amd64",
+                "version": "unknown",
+                "versions": {
+                    "unknown": {
+                        "items": {
+                            "disk1.img": {
+                                "path": "/unknown/path.img",
+                                "sha256": "unknown"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

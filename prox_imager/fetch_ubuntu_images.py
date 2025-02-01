@@ -80,28 +80,44 @@ def fetch_ubuntu_metadata(ubuntu_json_url: str) -> dict:
     return return_content
 
 
-def extract_image_data(metadata: dict) -> dict:
+def extract_image_data(metadata: dict, base_url) -> dict:
     """Extracts image details from the fetched JSON data."""
     images = {}
 
     for product, details in metadata.get("products", {}).items():
+        if details.get("arch") != "amd64":
+            continue  # Skip non-amd64 architectures
         release = details.get("release", "unknown")
-        arch = details.get("arch", "unknown")
         version = details.get("version", "unknown")
+        versions = details.get("versions", {})
+
+        if not versions:
+            log.info("⚠️ Skipping %s: No available builds", product)
+            continue
+
+        latest_version = max(versions.keys())  # Find latest available build
+        disk_data = versions[latest_version]["items"].get("disk1.img", {})
+
+        if not disk_data:
+            log.info("⚠️ Skipping %s: No disk1.img found", product)
+            continue
 
         # Get the download and checksum URLs
-        image_url = details.get("url")
-        sha256_url = details.get("sha256")
+        image_url = base_url + disk_data.get("path", "")
+        sha256_hash = disk_data.get("sha256", "unknown")
 
-        if image_url and sha256_url:
-            images[product] = {
-                "release": release,
-                "arch": arch,
-                "version": version,
-                "image_url": image_url,
-                "sha256_url": sha256_url
-            }
+        log.info("✅ Found %s %s %s %s %s",
+                 product, release, version, latest_version, image_url)
 
+        images[product] = {
+            "release": release,
+            "version": version,
+            "build_date": latest_version,
+            "image_url": image_url,
+            "sha256": sha256_hash
+        }
+
+    log.info("✅ Extracted %s images", len(images))
     return images
 
 
@@ -136,7 +152,8 @@ def main():
     if not metadata:
         return
 
-    image_data = extract_image_data(metadata)
+    image_data = extract_image_data(metadata,
+                                    config['image_urls']['ubuntu_base_url'])
     save_metadata(image_data, output_file)
 
 
