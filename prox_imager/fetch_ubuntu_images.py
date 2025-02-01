@@ -11,6 +11,15 @@ import toml
 log = logging.getLogger(__name__)
 
 
+def parse_args() -> argparse.Namespace:
+    """Parses command-line arguments."""
+    parser = argparse.ArgumentParser(description="Fetch and save Ubuntu cloud images metadata.")
+    parser.add_argument("-c", "--config",
+                        default="./etc/config.toml",
+                        help="Path to the configuration file.")
+    return parser.parse_args()
+
+
 def load_config(config_path: str) -> dict:
     """Loads configuration from a TOML file."""
     if not os.path.exists(config_path):
@@ -31,13 +40,14 @@ def load_config(config_path: str) -> dict:
         return {}
 
 
-def parse_args() -> argparse.Namespace:
-    """Parses command-line arguments."""
-    parser = argparse.ArgumentParser(description="Fetch and save Ubuntu cloud images metadata.")
-    parser.add_argument("-c", "--config",
-                        default="./etc/config.toml",
-                        help="Path to the configuration file.")
-    return parser.parse_args()
+def validate_config(config: dict) -> bool:
+    """Validates the configuration file."""
+    required_sections = ['image_urls', 'files']
+    for section in required_sections:
+        if section not in config:
+            log.error("❌ Missing required section in configuration file: %s", section)
+            return False
+    return True
 
 
 def fetch_ubuntu_metadata(ubuntu_json_url: str) -> dict:
@@ -105,8 +115,10 @@ def main():
     log.info("Starting the script...")
     args = parse_args()
     config = load_config(args.config)
+    if not config or not validate_config(config):
+        return
 
-    ubuntu_json_url = config['urls']['ubuntu_json_url']
+    ubuntu_json_url = config['image_urls']['ubuntu_json_url']
     output_file = config['files']['output_file']
     metadata = fetch_ubuntu_metadata(ubuntu_json_url)
     if not metadata:
