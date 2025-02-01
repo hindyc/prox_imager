@@ -3,12 +3,23 @@ import argparse
 import json
 import logging
 import os
+from typing import Callable
+
 import requests
 import toml
 
 
 # Configure logging
 log = logging.getLogger(__name__)
+
+
+def lazy_ic_import() -> Callable:
+    '''Import icecream only when needed.'''
+    # global ic
+    from icecream import ic  # pylint: disable=import-outside-toplevel
+    ic.configureOutput(includeContext=True)
+    ic.configureOutput(prefix='ic| ')
+    return ic
 
 
 def parse_args() -> argparse.Namespace:
@@ -118,7 +129,8 @@ def main():
     if not config or not validate_config(config):
         return
 
-    ubuntu_json_url = config['image_urls']['ubuntu_json_url']
+    ubuntu_json_url = (config['image_urls']['ubuntu_base_url'] +
+                       config['image_urls']['ubuntu_metadata_url'])
     output_file = config['files']['output_file']
     metadata = fetch_ubuntu_metadata(ubuntu_json_url)
     if not metadata:

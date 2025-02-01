@@ -9,7 +9,7 @@ class TestValidateConfig(unittest.TestCase):
     def test_all_sections_present(self):
         '''Test validate_config function with a config containing all sections.'''
         config = {
-            'urls': {},
+            'image_urls': {},
             'files': {},
         }
         self.assertTrue(validate_config(config))
@@ -17,7 +17,7 @@ class TestValidateConfig(unittest.TestCase):
     def test_some_sections_missing(self):
         '''Test validate_config function with a config missing some sections.'''
         config = {
-            'urls': {},
+            'image_urls': {},
         }
         self.assertFalse(validate_config(config))
 

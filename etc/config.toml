@@ -2,4 +2,5 @@
 output_file = "ubuntu_cloud_images.json"
 
 [image_urls]
-ubuntu_json_url = "https://cloud-images.ubuntu.com/minimal/daily/streams/v1/com.ubuntu.cloud:daily:download.json"
+ubuntu_base_url = "https://cloud-images.ubuntu.com/minimal/daily"
+ubuntu_metadata_url = "/streams/v1/com.ubuntu.cloud:daily:download.json"
