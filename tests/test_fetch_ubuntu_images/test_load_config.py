@@ -1,6 +1,5 @@
 '''Test cases for the fetch_ubuntu_images module.'''
 import unittest
-# import os
 from unittest.mock import patch, mock_open
 
 import toml
@@ -8,7 +7,7 @@ import toml
 from prox_imager.fetch_ubuntu_images import load_config
 
 
-class TestFetchUbuntuImages(unittest.TestCase):
+class TestLoadConfig(unittest.TestCase):
     '''Test cases for the fetch_ubuntu_images module.'''
     def setUp(self):
         # Setup code to run before each test
